@@ -1,0 +1,2 @@
+-- Create separate airflow DB schema (airflow uses its own DB namespace)
+-- The main app schema is handled by SQLAlchemy migrations on startup
