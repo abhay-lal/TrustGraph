@@ -35,45 +35,24 @@ The goal: demonstrate a production-grade data engineering workflow end-to-end, f
 ## Process flow
 
 ```
-GLEIF LEI Golden Copy (50k)
-OpenSanctions Entities (20k)
-Synthetic Duplicates (generated)
-             │
-     ┌───────▼────────┐
-     │  Airflow DAG   │  trustgraph_etl  @daily
-     └───────┬────────┘
-             │
-   ┌─────────┼──────────┐
-   ▼         ▼          ▼
-Extract   Extract    Generate
-GLEIF   OpenSanc.  Synthetics
-   └─────────┬──────────┘
-             ▼
-     Clean & Normalize
-    (names · addresses · countries · status)
-             │
-             ▼
-     Validate Data Quality
-    (checks → JSON report → Postgres)
-             │
-             ▼
-     Generate Embeddings
-    (MiniLM-L6 text profiles → vectors)
-             │
-             ▼
-     Entity Resolution
-    (RapidFuzz + cosine similarity → scored pairs)
-             │
-      ┌──────┼──────┐
-      ▼      ▼      ▼
- Postgres  Neo4j  Qdrant
-(records) (graph) (vectors)
-             │
-      FastAPI (16 endpoints)
-             │
-      LLM Layer (gpt-4o-mini)
-             │
-      Next.js Dashboard
+GLEIF · OpenSanctions · Synthetics
+           ↓
+      Airflow DAG (@daily)
+           ↓
+    Extract → Normalize → Validate → Embed → Resolve
+           ↓
+    ┌──────┼──────┐
+    ↓      ↓      ↓
+  Postgres Neo4j Qdrant
+    ↓      ↓      ↓
+ Records Graph Vectors
+           ↓
+      FastAPI (16 APIs)
+           ↓
+    LLM Layer (gpt-4o-mini)
+           ↓
+    Next.js Dashboard
+ (search · graph · review)
 ```
 
 The Airflow DAG running all 9 tasks end-to-end:
@@ -167,6 +146,7 @@ Python · Apache Airflow · PostgreSQL · Neo4j · Qdrant · FastAPI · SQLAlche
 |---|---|
 | [Cursor](https://cursor.com) | AI-native IDE used for the entire development workflow |
 | [Anthropic Claude Sonnet 4.6](https://www.anthropic.com) | Code generation, architecture decisions, debugging |
+| [Claude Code](https://claude.com/claude-code) | Project maintenance, documentation, and automated commits |
 | [OpenAI GPT-4o-mini](https://platform.openai.com) | In-app LLM match explanations, verification reports, query parsing |
 | [sentence-transformers `all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Entity profile embeddings for semantic search |
 
