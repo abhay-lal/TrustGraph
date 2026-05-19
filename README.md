@@ -179,6 +179,6 @@ Once the stack is up, go to Airflow, enable the `trustgraph_etl` DAG and trigger
 
 ## License
 
-Copyright © 2026 Agastya Upadhyay. All rights reserved.
+Copyright © 2026 Abhay Lal. All rights reserved.
 
 This project and its source code are proprietary. No part of this repository may be copied, modified, distributed, or used for commercial purposes without explicit written permission from the author. See [LICENSE](LICENSE) for full terms.
