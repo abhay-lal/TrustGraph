@@ -30,7 +30,7 @@ class QueryParseRequest(BaseModel):
 @router.post("/explain-match")
 def explain_match(req: ExplainMatchRequest):
     try:
-        from llm.explain_match import explain_match as _explain
+        from app.llm.explain_match import explain_match as _explain
         explanation = _explain(
             name_a=req.name_a,
             name_b=req.name_b,
@@ -61,7 +61,7 @@ def verification_report(req: VerificationReportRequest):
     relationships = get_relationship_list(req.lei)
 
     try:
-        from llm.verification_report import generate_verification_report
+        from app.llm.verification_report import generate_verification_report
         report = generate_verification_report(
             entity=entity,
             duplicates=duplicates,
@@ -93,7 +93,7 @@ def verification_report(req: VerificationReportRequest):
 @router.post("/parse-query")
 def parse_query(req: QueryParseRequest):
     try:
-        from llm.query_parser import parse_search_query
+        from app.llm.query_parser import parse_search_query
         result = parse_search_query(req.query)
         return result
     except Exception as e:

@@ -21,7 +21,7 @@ def semantic_search(req: SemanticSearchRequest):
 
     if req.use_llm_parser:
         try:
-            from llm.query_parser import parse_search_query
+            from app.llm.query_parser import parse_search_query
             parsed = parse_search_query(req.query)
             query = parsed.get("semantic_query", req.query)
             filters = parsed.get("filters", {})
