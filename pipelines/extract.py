@@ -58,13 +58,37 @@ TYPO_MAP = {
 # ── GLEIF ─────────────────────────────────────────────────────────────────────
 
 def _resolve_gleif_download_url() -> str:
-    """Resolve the actual CSV download URL from the GLEIF API."""
+    """
+    Resolve the best available GLEIF CSV download URL from the golden copy API.
+    Prefers the IntraDay delta (~700 KB, real data) over the full golden copy
+    (~460 MB) to avoid timeouts in containerised environments.
+    """
     resp = requests.get(GLEIF_GOLDEN_COPY_URL, timeout=30)
     resp.raise_for_status()
-    data = resp.json()
-    for file_info in data.get("data", {}).get("attributes", {}).get("fullFiles", []):
+    data = resp.json().get("data", {})
+
+    # New API shape: data.delta_files.IntraDay.csv.url
+    intraday_url = (
+        data.get("delta_files", {})
+            .get("IntraDay", {})
+            .get("csv", {})
+            .get("url")
+    )
+    if intraday_url:
+        logger.info("Using GLEIF IntraDay delta CSV (~700 KB of real data).")
+        return intraday_url
+
+    # Fallback: data.full_file.csv.url  (new shape)
+    full_url = data.get("full_file", {}).get("csv", {}).get("url")
+    if full_url:
+        logger.info("Using GLEIF full golden copy CSV.")
+        return full_url
+
+    # Legacy API shape: data.attributes.fullFiles[*]
+    for file_info in data.get("attributes", {}).get("fullFiles", []):
         if file_info.get("mimeType") == "text/csv":
             return file_info["url"]
+
     raise ValueError("Could not find CSV download URL from GLEIF golden copy API")
 
 

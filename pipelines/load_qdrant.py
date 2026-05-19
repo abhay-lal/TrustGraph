@@ -94,11 +94,11 @@ def semantic_search(
 
     query_filter = Filter(must=must) if must else None
 
-    results = client.search(
+    response = client.query_points(
         collection_name=COLLECTION,
-        query_vector=query_vector.tolist(),
+        query=query_vector.tolist(),
         limit=limit,
         query_filter=query_filter,
         with_payload=True,
     )
-    return [{"score": r.score, **r.payload} for r in results]
+    return [{"score": r.score, **r.payload} for r in response.points]
