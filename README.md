@@ -1,6 +1,6 @@
 # TrustGraph
 
-> End-to-end identity data platform for legal entity verification — built with Airflow, Postgres, Neo4j, Qdrant, and an LLM-powered analyst layer.
+> End-to-end identity data platform for legal entity verification, built with Airflow, Postgres, Neo4j, Qdrant, and an LLM-powered analyst layer.
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
 ![Airflow](https://img.shields.io/badge/Airflow-2.9-017CEE?style=flat-square&logo=apacheairflow)
@@ -11,17 +11,13 @@
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)
 
----
-
 ## What is this?
 
-Corporate identity data is messy — the same company appears under dozens of name variations, jurisdictions, and registration IDs across different datasets. TrustGraph solves that.
+Corporate identity data is messy. The same company appears under dozens of name variations, jurisdictions, and registration IDs across different datasets. TrustGraph solves that.
 
 It ingests **50,000+ legal entity records** from GLEIF (the global LEI registry), runs them through a full data engineering pipeline — cleaning, validation, deduplication, embedding, and graph loading — and surfaces the result as a queryable platform with semantic search and an LLM analyst assistant.
 
 The goal: demonstrate a production-grade data engineering workflow end-to-end, from raw source files to multi-database storage, with an AI layer on top.
-
----
 
 ## What it does
 
@@ -35,8 +31,6 @@ The goal: demonstrate a production-grade data engineering workflow end-to-end, f
 | 🧠 | **Semantic search** — natural-language queries parsed by LLM into structured filters, then executed against a Qdrant vector index |
 | 🤖 | **LLM assistant** — GPT-4o-mini generates match explanations, verification reports, and query parsing via structured function calling |
 
----
-
 ## Tech stack
 
 | Layer | Tools |
@@ -48,8 +42,6 @@ The goal: demonstrate a production-grade data engineering workflow end-to-end, f
 | **Backend** | Python 3.11 · FastAPI · SQLAlchemy · Pydantic |
 | **Frontend** | Next.js 14 (App Router) · Tailwind CSS · react-force-graph-2d |
 | **Infra** | Docker Compose — 6 services, health checks, volume mounts |
-
----
 
 ## Process flow
 
@@ -99,8 +91,6 @@ The Airflow DAG running all 9 tasks end-to-end:
 
 ![Airflow ETL DAG](assets/dag-graph.png)
 
----
-
 ## Entity resolution scoring
 
 Duplicate detection uses a weighted similarity score across 5 signals:
@@ -119,15 +109,13 @@ final_score =  0.35 × name_similarity        (RapidFuzz token sort)
 | 0.65 – 0.85 | `needs_review` — queued for human |
 | < 0.65 | `different_entity` |
 
----
-
 ## Dashboard
 
 The Next.js frontend gives a live view of pipeline metrics, entity search, graph visualization, and the entity resolution review queue.
 
 ![TrustGraph Dashboard](assets/ui-dashboard.png)
 
-**Natural-language entity search** — query like *"active commercial lenders in Canada"* is parsed by the LLM into structured filters, hits Qdrant, and returns results with an inline knowledge graph view.
+**Natural-language entity search** — a query like *"active commercial lenders in Canada"* gets parsed by the LLM into structured filters, hits Qdrant, and returns results with an inline knowledge graph view.
 
 ![Entity Search](assets/ui-entity-search.png)
 
@@ -135,11 +123,9 @@ The Next.js frontend gives a live view of pipeline metrics, entity search, graph
 
 ![Resolution Review](assets/ui-resolution.png)
 
----
-
 ## How to run
 
-**Prerequisites:** Docker Desktop · OpenAI API key
+You'll need Docker Desktop and an OpenAI API key.
 
 ```bash
 git clone https://github.com/your-username/trustgraph.git
@@ -147,7 +133,7 @@ cd trustgraph
 cp .env.example .env
 ```
 
-Edit `.env` — two values to fill in:
+Open `.env` and fill in two values:
 
 ```bash
 OPENAI_API_KEY=sk-proj-...
@@ -157,21 +143,21 @@ python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().
 AIRFLOW__CORE__FERNET_KEY=<paste output>
 ```
 
+Then bring everything up:
+
 ```bash
 docker compose up --build
 ```
 
 | Service | URL | Credentials |
 |---|---|---|
-| Dashboard | http://localhost:3000 | — |
-| API (Swagger) | http://localhost:8000/docs | — |
+| Dashboard | http://localhost:3000 | |
+| API (Swagger) | http://localhost:8000/docs | |
 | Airflow | http://localhost:8080 | `admin` / `admin` |
-| Neo4j Browser | http://localhost:7474 | — |
-| Qdrant | http://localhost:6333/dashboard | — |
+| Neo4j Browser | http://localhost:7474 | |
+| Qdrant | http://localhost:6333/dashboard | |
 
-Then in Airflow: enable and trigger the `trustgraph_etl` DAG. First run takes ~15–30 min (download + embedding).
-
----
+Once the stack is up, go to Airflow, enable the `trustgraph_etl` DAG and trigger it. The first run takes around 15–30 minutes to download the datasets and generate embeddings. After that, the dashboard populates with live data.
 
 ## Data sources
 
@@ -182,8 +168,6 @@ Then in Airflow: enable and trigger the `trustgraph_etl` DAG. First run takes ~1
 | [OpenSanctions](https://www.opensanctions.org/datasets/) | Sanctions and watchlist entities for risk matching |
 | Synthetic duplicates | Programmatically generated noisy copies for entity resolution benchmarking |
 
----
-
 ## Built with
 
 | Tool | Role |
@@ -193,10 +177,8 @@ Then in Airflow: enable and trigger the `trustgraph_etl` DAG. First run takes ~1
 | [OpenAI GPT-4o-mini](https://platform.openai.com) | In-app LLM — match explanations, verification reports, query parsing |
 | [sentence-transformers `all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Entity profile embeddings for semantic search |
 
----
-
 ## License
 
-Copyright © 2026 Abhay Lal. All rights reserved.
+Copyright © 2026 Agastya Upadhyay. All rights reserved.
 
 This project and its source code are proprietary. No part of this repository may be copied, modified, distributed, or used for commercial purposes without explicit written permission from the author. See [LICENSE](LICENSE) for full terms.
