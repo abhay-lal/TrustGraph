@@ -22,7 +22,7 @@ from qdrant_client.models import (
 logger = logging.getLogger(__name__)
 
 COLLECTION = os.environ.get("QDRANT_COLLECTION", "trustgraph_entities")
-VECTOR_SIZE = 384  # all-MiniLM-L6-v2 output dimension
+VECTOR_SIZE = 1536  # text-embedding-3-small output dimension
 BATCH_SIZE = 256
 
 

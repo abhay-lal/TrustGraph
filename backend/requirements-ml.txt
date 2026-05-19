@@ -1,1 +1,2 @@
-sentence-transformers>=2.7.0
+# sentence-transformers removed — using OpenAI text-embedding-3-small instead
+# No heavy ML deps needed in the API container

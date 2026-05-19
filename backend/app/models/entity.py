@@ -7,7 +7,7 @@ class Entity(Base):
     __tablename__ = "entities"
 
     id = Column(String, primary_key=True)  # LEI as primary key
-    lei = Column(String(20), unique=True, nullable=False, index=True)
+    lei = Column(String(50), unique=True, nullable=False, index=True)
     legal_name = Column(String(512), nullable=False)
     normalized_name = Column(String(512), nullable=True, index=True)
     other_names = Column(Text, nullable=True)         # JSON array stored as text

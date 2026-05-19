@@ -1,5 +1,6 @@
 """
-embeddings.py — Generate sentence embeddings for entity text profiles.
+embeddings.py — Generate embeddings for entity text profiles.
+Uses OpenAI text-embedding-3-small (fast, lightweight, no local GPU needed).
 """
 
 import logging
@@ -13,8 +14,9 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 PROCESSED_DIR = Path(os.environ.get("DATA_DIR", "/opt/airflow/data")) / "processed"
-MODEL_NAME = "all-MiniLM-L6-v2"
-BATCH_SIZE = 256
+BATCH_SIZE = 100
+EMBED_MODEL = "text-embedding-3-small"
+VECTOR_SIZE = 1536  # text-embedding-3-small output dimension
 
 
 def build_text_profile(row: dict) -> str:
@@ -38,27 +40,35 @@ def build_text_profile(row: dict) -> str:
 
 def generate_embeddings(df: pd.DataFrame) -> Dict[str, np.ndarray]:
     """
-    Embed all entities using Sentence Transformers.
+    Embed all entities using OpenAI text-embedding-3-small.
     Returns a dict mapping LEI → embedding vector.
     """
-    from sentence_transformers import SentenceTransformer
+    from openai import OpenAI
 
-    model = SentenceTransformer(MODEL_NAME)
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
     profiles = [build_text_profile(row) for _, row in df.iterrows()]
     leis = df["lei"].tolist()
 
-    logger.info("Generating embeddings for %d entities...", len(profiles))
-    vectors = model.encode(
-        profiles,
-        batch_size=BATCH_SIZE,
-        show_progress_bar=True,
-        normalize_embeddings=True,
-    )
+    logger.info("Generating OpenAI embeddings for %d entities...", len(profiles))
 
-    embeddings = {lei: vec for lei, vec in zip(leis, vectors)}
+    embeddings = {}
+    for i in range(0, len(profiles), BATCH_SIZE):
+        batch_profiles = profiles[i:i + BATCH_SIZE]
+        batch_leis = leis[i:i + BATCH_SIZE]
 
-    out_path = PROCESSED_DIR / "embeddings.npz"
+        response = client.embeddings.create(
+            model=EMBED_MODEL,
+            input=batch_profiles,
+        )
+        for lei, emb_obj in zip(batch_leis, response.data):
+            embeddings[lei] = np.array(emb_obj.embedding, dtype=np.float32)
+
+        if i % 1000 == 0:
+            logger.info("Embedded %d / %d entities", i + len(batch_profiles), len(profiles))
+
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = PROCESSED_DIR / "embeddings.npz"
     np.savez_compressed(str(out_path), **{
         lei.replace("/", "_"): vec for lei, vec in embeddings.items()
     })

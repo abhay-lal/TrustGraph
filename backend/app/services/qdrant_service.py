@@ -1,19 +1,18 @@
 import os
 from typing import Optional
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 COLLECTION = os.environ.get("QDRANT_COLLECTION", "trustgraph_entities")
-_model: Optional[SentenceTransformer] = None
+EMBED_MODEL = "text-embedding-3-small"
 
 
-def _get_model() -> SentenceTransformer:
-    global _model
-    if _model is None:
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
+def _embed(text: str) -> list:
+    from openai import OpenAI
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    response = client.embeddings.create(model=EMBED_MODEL, input=[text])
+    return response.data[0].embedding
 
 
 def _get_client() -> QdrantClient:
@@ -28,9 +27,12 @@ def semantic_search(
     country: str = None,
     entity_status: str = None,
 ) -> list:
-    """Embed query and search Qdrant for nearest matching entities."""
-    model = _get_model()
-    vector = model.encode(query, normalize_embeddings=True).tolist()
+    """Embed query with OpenAI and search Qdrant for nearest matching entities."""
+    try:
+        vector = _embed(query)
+    except Exception as e:
+        return []
+
     client = _get_client()
 
     must = []
@@ -50,7 +52,7 @@ def semantic_search(
             with_payload=True,
         )
         return [{"score": round(r.score, 4), **r.payload} for r in results]
-    except Exception as e:
+    except Exception:
         return []
 
 

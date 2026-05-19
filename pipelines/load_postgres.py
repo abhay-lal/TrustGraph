@@ -159,7 +159,7 @@ def _ensure_tables(engine) -> None:
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS entities (
                 id VARCHAR PRIMARY KEY,
-                lei VARCHAR(20) UNIQUE NOT NULL,
+                lei VARCHAR(50) UNIQUE NOT NULL,
                 legal_name VARCHAR(512) NOT NULL,
                 normalized_name VARCHAR(512),
                 other_names TEXT,
@@ -178,8 +178,8 @@ def _ensure_tables(engine) -> None:
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS entity_resolution_matches (
                 id VARCHAR PRIMARY KEY,
-                lei_a VARCHAR(20),
-                lei_b VARCHAR(20),
+                lei_a VARCHAR(50),
+                lei_b VARCHAR(50),
                 name_a VARCHAR(512),
                 name_b VARCHAR(512),
                 name_similarity FLOAT,

@@ -7,8 +7,8 @@ class EntityResolutionMatch(Base):
     __tablename__ = "entity_resolution_matches"
 
     id = Column(String, primary_key=True)
-    lei_a = Column(String(20), nullable=False, index=True)
-    lei_b = Column(String(20), nullable=False, index=True)
+    lei_a = Column(String(50), nullable=False, index=True)
+    lei_b = Column(String(50), nullable=False, index=True)
     name_a = Column(String(512), nullable=True)
     name_b = Column(String(512), nullable=True)
     name_similarity = Column(Float, nullable=True)

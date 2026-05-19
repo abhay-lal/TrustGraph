@@ -13,6 +13,7 @@ build/
 # Environment
 .env
 *.env
+.env.example
 
 # Data (too large for git)
 data/raw/
