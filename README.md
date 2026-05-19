@@ -31,17 +31,6 @@ The goal: demonstrate a production-grade data engineering workflow end-to-end, f
 | 🧠 | **Semantic search** — natural-language queries parsed by LLM into structured filters, then executed against a Qdrant vector index |
 | 🤖 | **LLM assistant** — GPT-4o-mini generates match explanations, verification reports, and query parsing via structured function calling |
 
-## Tech stack
-
-| Layer | Tools |
-|---|---|
-| **Orchestration** | Apache Airflow 2.9 (LocalExecutor, Postgres backend) |
-| **Storage** | PostgreSQL 16 · Neo4j 5 (APOC) · Qdrant |
-| **ML / NLP** | sentence-transformers `all-MiniLM-L6-v2` · RapidFuzz |
-| **LLM** | OpenAI `gpt-4o-mini` — structured JSON output via function calling |
-| **Backend** | Python 3.11 · FastAPI · SQLAlchemy · Pydantic |
-| **Frontend** | Next.js 14 (App Router) · Tailwind CSS · react-force-graph-2d |
-| **Infra** | Docker Compose — 6 services, health checks, volume mounts |
 
 ## Process flow
 
@@ -167,6 +156,10 @@ Once the stack is up, go to Airflow, enable the `trustgraph_etl` DAG and trigger
 | [GLEIF Level 2](https://www.gleif.org/en/lei-data/access-and-use-lei-data/level-2-data-who-owns-whom) | Parent/subsidiary ownership relationships |
 | [OpenSanctions](https://www.opensanctions.org/datasets/) | Sanctions and watchlist entities for risk matching |
 | Synthetic duplicates | Programmatically generated noisy copies for entity resolution benchmarking |
+
+## Tech stack
+
+Python · Apache Airflow · PostgreSQL · Neo4j · Qdrant · FastAPI · SQLAlchemy · sentence-transformers · RapidFuzz · OpenAI API · Next.js · Tailwind CSS · Docker Compose
 
 ## Built with
 
