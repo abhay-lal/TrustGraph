@@ -181,3 +181,22 @@ Then in Airflow: enable and trigger the `trustgraph_etl` DAG. First run takes ~1
 | [GLEIF Level 2](https://www.gleif.org/en/lei-data/access-and-use-lei-data/level-2-data-who-owns-whom) | Parent/subsidiary ownership relationships |
 | [OpenSanctions](https://www.opensanctions.org/datasets/) | Sanctions and watchlist entities for risk matching |
 | Synthetic duplicates | Programmatically generated noisy copies for entity resolution benchmarking |
+
+---
+
+## Built with
+
+| Tool | Role |
+|---|---|
+| [Cursor](https://cursor.com) | AI-native IDE used for the entire development workflow |
+| [Anthropic Claude Sonnet 4.6](https://www.anthropic.com) | Code generation, architecture decisions, debugging |
+| [OpenAI GPT-4o-mini](https://platform.openai.com) | In-app LLM — match explanations, verification reports, query parsing |
+| [sentence-transformers `all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Entity profile embeddings for semantic search |
+
+---
+
+## License
+
+Copyright © 2026 Abhay Lal. All rights reserved.
+
+This project and its source code are proprietary. No part of this repository may be copied, modified, distributed, or used for commercial purposes without explicit written permission from the author. See [LICENSE](LICENSE) for full terms.
