@@ -23,13 +23,13 @@ The goal: demonstrate a production-grade data engineering workflow end-to-end, f
 
 | | Capability |
 |---|---|
-| 🔄 | **ETL pipeline** — Airflow DAG extracts GLEIF + OpenSanctions data, cleans and normalizes it, runs data quality checks, generates embeddings, resolves duplicates, and loads three databases |
-| 🧹 | **Data cleaning** — normalizes company names, addresses, country codes, and entity status fields |
-| ✅ | **Data quality** — automated checks with pass/fail metrics persisted in PostgreSQL |
-| 🔍 | **Entity resolution** — hybrid scoring with RapidFuzz (name/address fuzzy match) + sentence-transformers (semantic embeddings) |
-| 🕸️ | **Graph modeling** — Neo4j stores parent/subsidiary ownership chains and resolution matches as a traversable graph |
-| 🧠 | **Semantic search** — natural-language queries parsed by LLM into structured filters, then executed against a Qdrant vector index |
-| 🤖 | **LLM assistant** — GPT-4o-mini generates match explanations, verification reports, and query parsing via structured function calling |
+| 🔄 | **ETL pipeline** Airflow DAG extracts GLEIF + OpenSanctions data, cleans and normalizes it, runs data quality checks, generates embeddings, resolves duplicates, and loads three databases |
+| 🧹 | **Data cleaning** normalizes company names, addresses, country codes, and entity status fields |
+| ✅ | **Data quality** automated checks with pass/fail metrics persisted in PostgreSQL |
+| 🔍 | **Entity resolution** hybrid scoring with RapidFuzz (name/address fuzzy match) + sentence-transformers (semantic embeddings) |
+| 🕸️ | **Graph modeling** Neo4j stores parent/subsidiary ownership chains and resolution matches as a traversable graph |
+| 🧠 | **Semantic search** natural-language queries parsed by LLM into structured filters, then executed against a Qdrant vector index |
+| 🤖 | **LLM assistant** GPT-4o-mini generates match explanations, verification reports, and query parsing via structured function calling |
 
 
 ## Process flow
@@ -94,8 +94,8 @@ final_score =  0.35 × name_similarity        (RapidFuzz token sort)
 
 | Score | Label |
 |---|---|
-| ≥ 0.85 | `same_entity` — auto-merged |
-| 0.65 – 0.85 | `needs_review` — queued for human |
+| ≥ 0.85 | `same_entity` auto-merged |
+| 0.65 – 0.85 | `needs_review` queued for human |
 | < 0.65 | `different_entity` |
 
 ## Dashboard
@@ -152,7 +152,7 @@ Once the stack is up, go to Airflow, enable the `trustgraph_etl` DAG and trigger
 
 | Dataset | Description |
 |---|---|
-| [GLEIF LEI Golden Copy](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy) | 50k legal entity records — LEI, name, address, jurisdiction, status |
+| [GLEIF LEI Golden Copy](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy) | 50k legal entity records LEI, name, address, jurisdiction, status |
 | [GLEIF Level 2](https://www.gleif.org/en/lei-data/access-and-use-lei-data/level-2-data-who-owns-whom) | Parent/subsidiary ownership relationships |
 | [OpenSanctions](https://www.opensanctions.org/datasets/) | Sanctions and watchlist entities for risk matching |
 | Synthetic duplicates | Programmatically generated noisy copies for entity resolution benchmarking |
@@ -167,7 +167,7 @@ Python · Apache Airflow · PostgreSQL · Neo4j · Qdrant · FastAPI · SQLAlche
 |---|---|
 | [Cursor](https://cursor.com) | AI-native IDE used for the entire development workflow |
 | [Anthropic Claude Sonnet 4.6](https://www.anthropic.com) | Code generation, architecture decisions, debugging |
-| [OpenAI GPT-4o-mini](https://platform.openai.com) | In-app LLM — match explanations, verification reports, query parsing |
+| [OpenAI GPT-4o-mini](https://platform.openai.com) | In-app LLM match explanations, verification reports, query parsing |
 | [sentence-transformers `all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Entity profile embeddings for semantic search |
 
 ## License
