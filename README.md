@@ -127,6 +127,14 @@ The Next.js frontend gives a live view of pipeline metrics, entity search, graph
 
 ![TrustGraph Dashboard](assets/ui-dashboard.png)
 
+**Natural-language entity search** — query like *"active commercial lenders in Canada"* is parsed by the LLM into structured filters, hits Qdrant, and returns results with an inline knowledge graph view.
+
+![Entity Search](assets/ui-entity-search.png)
+
+**Resolution review queue** — side-by-side duplicate comparison with per-signal similarity bars and an LLM-generated plain-English explanation. Analyst accepts or rejects with one click.
+
+![Resolution Review](assets/ui-resolution.png)
+
 ---
 
 ## How to run
